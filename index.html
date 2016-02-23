@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Manipulação de Eixos</title>
+		<script src="Sprite.js"></script>
+	</head>
+	<body>
+		<h1>Manipulação de Eixos</h1>
+		<canvas width="800" height="500" >
+			Seu navegador nao tem suporte ao canvas!
+		</canvas>
+
+<script>
+		
+
+		var teclado = {
+			esquerda: false,
+			direita: false,
+			cima: false,
+			baixo: false,
+			espaco : false
+		};
+		teclado.teclaPressionada = function(e){
+				switch (e.keyCode){
+					case 37: 
+						teclado.esquerda = true;
+					break;
+					case 38: 
+						teclado.cima = true;
+					break;
+					case 39: 
+						teclado.direita = true;
+					break;
+					case 40: 
+						teclado.baixo = true;
+					break;
+					case 32:
+						pc.tiro = true;		
+					break;
+				}																																																																																																																																																																																																																																																																																																																																																													
+			};
+			teclado.teclaSolta = function(e){
+				switch (e.keyCode){
+					case 37: 
+						teclado.esquerda = false;
+					break;
+					case 38: 
+						teclado.cima = false;
+					break;
+					case 39: 
+						teclado.direita = false;
+					break;
+					case 40: 
+						teclado.baixo = false;
+					break;
+					case 32:
+						pc.tiro = false;	
+					break;
+				};
+			};
+	
+
+	var tela = document.getElementsByTagName("canvas")[0];
+	var ctx = tela.getContext("2d");
+
+		
+
+	var fps = 60;
+	var g = 40;
+	var dt = 1/fps;
+	var vida = 3;
+
+	var pc = new Sprite();
+	pc.x = 500;
+	pc.y = 470;
+	pc.desenharAliado(ctx);
+	pc.tiro = false;
+	pc.intervaloTiro = 0;
+	pc.controlar = function(t){
+
+		if(teclado.direita){
+			
+		 	this.ax = 50*g;
+			
+		}else if(teclado.esquerda) {
+			
+			this.ax = -50*g;
+
+		}else{
+			this.ax = 0;
+		}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						
+		if(teclado.cima) {
+			this.ay = -50*g;
+		}else if(teclado.baixo) {
+			this.ay = 50*g;
+		}else{
+			this.ay = 0;
+		}
+	};
+
+        var pontuacao = 1;
+        var taxaPontuacao = 12;
+
+	var taxaVida = 10;
+        
+        
+     var inimigo = new Sprite();
+     inimigo.x = 100;
+	inimigo.y = 5;
+	inimigo.tiro=true;
+        inimigo.angulo = 7.87;
+        inimigo.velocidade = 50;
+	inimigo.intervaloTiro=0;
+	inimigo.desenharNave(ctx,"ship2",32,160);
+	var inimigo2 = new Sprite();
+        inimigo2.x = 100;
+	inimigo2.y = 5;
+        inimigo2.angulo = 7.87;
+        inimigo2.velocidade = 50;
+		inimigo2.tiro=true;
+		inimigo2.intervaloTiro=0;
+	inimigo2.desenharNave(ctx,"ship2",0,0);
+	var inimigo3 = new Sprite();
+        inimigo3.x = 140;
+	inimigo3.y = 5;
+        inimigo3.angulo = 7.87;
+        inimigo3.velocidade = 50;
+	inimigo3.desenharNave(ctx,"ship2",0,0);
+	inimigo3.tiro=true;
+		inimigo3.intervaloTiro=0;
+	var inimigo4 = new Sprite();
+        inimigo4.x = 200;
+	inimigo4.y = 5;
+        inimigo4.angulo = 7.87;
+        inimigo4.velocidade = 50;
+	inimigo4.desenharNave(ctx,"ship2",0,0);
+	inimigo4.tiro=true;
+	inimigo4.intervaloTiro=0;
+	var inimigo5 = new Sprite();
+        inimigo5.x = 120;
+	inimigo5.y = 5;
+        inimigo5.angulo = 7.87;
+        inimigo5.velocidade = 50;
+	inimigo5.desenharNave(ctx,"ship2",0,128);
+
+	var tiros = [];
+	var tirosInimigo = [];
+	var imagemFundo = new Image();
+	imagemFundo.src = "spaceBg.png";
+
+		
+	function mirarAliado(inimigo){
+	
+		var dx =     pc.x -inimigo.x ;
+		var dy =pc.y -  inimigo.y  ;
+		var auxH = (dx*dx) + (dy*dy);
+		
+		var hipotenusa = Math.sqrt(auxH);
+		var seno = dy/hipotenusa;
+		
+		inimigo.angulo = Math.asin(seno);
+		if(pc.x < inimigo.x)
+		inimigo.angulo = 3.14 - inimigo.angulo;
+	}		
+		
+       function atirar(ini,velocidadeTiro,intervaloTiro){
+
+		if(ini.tiro && ini.intervaloTiro<=0){
+			var tiro = new Sprite();
+			tiro.w = 10;
+			tiro.h = 10;
+			tiro.velocidade = velocidadeTiro;
+
+			tiro.x = ini.x;
+			tiro.y = ini.y ;
+			mirarAliado(tiro);
+			tirosInimigo.push(tiro);
+			ini.intervaloTiro = 1/intervaloTiro ;
+			
+			
+		}
+		ini.intervaloTiro -= 1*dt;
+		tirosInimigo.forEach(function(t){
+			t.mover(dt,0);	
+			t.desenharTiroInimigo(ctx,"ship2");
+				if(t.y<0 || t.y > tela.height || t.x<0 || t.x> tela.width){
+					tirosInimigo.splice(tirosInimigo.indexOf(t), 1);
+				}
+				
+				if(t.colidiuCom(pc)){
+					taxaVida =taxaVida + taxaVida*dt;	
+				}
+			});
+	}
+	
+	
+	addEventListener("keydown", teclado.teclaPressionada);
+	addEventListener("keyup", teclado.teclaSolta);
+
+	setInterval(passo, 800/fps);
+	function passo(){
+
+		ctx.drawImage(imagemFundo,0,0,800,500);	
+
+		pc.controlar();	
+		pc.moverAliado(dt,g);
+                inimigo.mover(dt,0);
+		inimigo2.mover(dt,0);
+		inimigo3.mover(dt,0);
+		inimigo4.mover(dt,0);
+		inimigo5.mover(dt,0);
+		ctx.fillStyle = "red";
+		ctx.fillRect(150,10,650-taxaVida,30);
+		ctx.fill();
+		ctx.stroke();
+		
+		atirar(inimigo,70,2);
+		atirar(inimigo3,70,0.6);
+		atirar(inimigo4,70,0.6);
+		atirar(inimigo5,40,2);
+		
+		if(pc.tiro && pc.intervaloTiro<=0){
+
+			var tiro = new Sprite();
+			tiro.w = 10;
+			tiro.h = 10;
+			tiro.velocidade = 500;
+			tiro.angulo = pc.angulo;
+			tiro.x = pc.x - 10;
+			tiro.y = pc.y ;
+			var tiro2 = new Sprite();
+			tiro2.w = 10;
+			tiro2.h = 10;
+			tiro2.velocidade = 500;
+			tiro2.angulo = pc.angulo;
+			tiro2.x = pc.x + 10;
+			tiro2.y = pc.y ;
+			if(pontuacao>2000){
+				var tiro3 = new Sprite();
+				tiro3.w = 10;
+				tiro3.h = 10;
+				tiro3.velocidade = 500;
+				tiro3.angulo = pc.angulo+0.1;
+				tiro3.x = pc.x + 10;
+				tiro3.y = pc.y ;
+				tiro2.x = pc.x;
+				tiro.angulo = pc.angulo - 0.1;
+				tiros.push(tiro3);
+			}
+			
+			tiros.push(tiro);
+			tiros.push(tiro2);
+			pc.intervaloTiro = 1/4; // 5 tiros por segundo
+		}
+		
+		
+		pc.intervaloTiro -= 1*dt;
+		tiros.forEach(function(t){
+			t.mover(dt,0);	
+			t.desenharTiro(ctx,"ship2");
+			if(t.y<0 || t.y > tela.height || t.x<0 || t.x> tela.width){
+				tiros.splice(tiros.indexOf(t), 1);
+			}
+                        if(t.colidiuCom(inimigo)){
+                            reiniciarInimigo(inimigo);
+                            pontuacao+=taxaPontuacao;
+			  // inimigo.velocidade = inimigo.velocidade + (pontuacao/1000);
+				t.x = -1000;
+				
+                        }
+			if(t.colidiuCom(inimigo2)){
+                            reiniciarInimigo(inimigo2);
+                            pontuacao+=taxaPontuacao;
+			 //  inimigo2.velocidade = inimigo2.velocidade + (pontuacao/1000);
+				t.x = -1000;
+                        }
+			if(t.colidiuCom(inimigo3)){
+                            reiniciarInimigo(inimigo3);
+                            pontuacao+=taxaPontuacao;
+			 //  inimigo3.velocidade = inimigo3.velocidade + (pontuacao/1000);
+				t.x = -1000;
+                        }
+			if(t.colidiuCom(inimigo4)){
+                            reiniciarInimigo(inimigo4);
+                            pontuacao+=taxaPontuacao;
+			 //  inimigo4.velocidade = inimigo4.velocidade + (pontuacao/1000);
+				t.x = -1000;
+                        }
+			if(t.colidiuCom(inimigo5)){
+                            reiniciarInimigo(inimigo5);
+                            pontuacao+=taxaPontuacao;
+			 //  inimigo5.velocidade = inimigo5.velocidade + (pontuacao/1000);
+				t.x = -1000;
+			}
+                            
+		});
+
+		if(pc.y > 470){
+			pc.y = 470;
+			pc.vy = 0;
+		}
+                if(pc.x > 780){
+			pc.x = 780;
+			pc.vx = 0;
+		}
+		if(pc.x < 10){
+			pc.x = 10;
+			pc.vx = 0;
+		}
+                if(inimigo.y>500){
+                    reiniciarInimigo(inimigo);
+			taxaVida =taxaVida + taxaVida*dt*10;
+		}
+          	if(inimigo2.y>500){
+                    reiniciarInimigo(inimigo2);
+			taxaVida =taxaVida + taxaVida*dt*10;
+		}
+		if(inimigo3.y>500){
+                    reiniciarInimigo(inimigo3);
+			taxaVida =taxaVida + taxaVida*dt*10;
+		}
+		if(inimigo4.y>500){
+                    reiniciarInimigo(inimigo4);
+			taxaVida =taxaVida + taxaVida*dt*10;
+
+		}
+		if(inimigo5.y>500){
+                    reiniciarInimigo(inimigo5);
+			taxaVida =taxaVida + taxaVida*dt*10;
+		}
+
+		if(inimigo.colidiuCom(pc)){
+			taxaVida =taxaVida + taxaVida*dt;			
+		}
+		if(inimigo2.colidiuCom(pc)){
+			taxaVida =taxaVida + taxaVida*dt;			
+		}
+		if(inimigo3.colidiuCom(pc)){
+			taxaVida =taxaVida + taxaVida*dt;			
+		}
+		if(inimigo4.colidiuCom(pc)){
+			taxaVida =taxaVida + taxaVida*dt;			
+		}
+		if(inimigo5.colidiuCom(pc)){
+			taxaVida =taxaVida + taxaVida*dt;			
+		}
+		if(taxaVida>650){
+			vida = vida - 1;
+			taxaVida = 10;		
+		}
+		
+		
+
+                inimigo.desenharNave(ctx,"ship2",32,160);
+                inimigo2.desenharNave(ctx,"ship2",65,128);
+		inimigo3.desenharNave(ctx,"ship2",0,190);
+                inimigo4.desenharNave(ctx,"ship2",0,160);
+                inimigo5.desenharNave(ctx,"ship2",0,128);
+		pc.desenharAliado(ctx);
+                
+                function reiniciarInimigo(ini){
+                    ini.y = -40;
+					ini.x = 50;
+
+                    ini.x = 50+Math.random()*750;
+                    
+                }
+
+
+		
+                if(vida==0){
+                       if(confirm("Você perdeu. Pontuação: "+pontuacao)){
+                            pontuacao = 0;
+                            taxaVida=10;
+			    inimigo.velocidade = 100;
+				vida = 3;
+				reiniciarInimigo(inimigo);
+				reiniciarInimigo(inimigo2);
+				reiniciarInimigo(inimigo3);
+				reiniciarInimigo(inimigo4);
+				reiniciarInimigo(inimigo5);
+				
+                           
+                       }
+                }
+                ctx.fillStyle = "white";
+                ctx.font ="15px Georgia";
+                ctx.fillText("Pontuação: "+pontuacao,30,30);
+				ctx.fillStyle = "white";
+                ctx.font ="15px Georgia";
+                ctx.fillText("Vidas: "+vida,300,60);
+                
+	}
+
+</script>
+</html>
