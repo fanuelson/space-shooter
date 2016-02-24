@@ -13,7 +13,6 @@
 
 <script>
 		
-
 		var teclado = {
 			esquerda: false,
 			direita: false,
@@ -38,7 +37,7 @@
 					case 32:
 						pc.tiro = true;		
 					break;
-				}																																																																																																																																																																																																																																																																																																																																																													
+				}
 			};
 			teclado.teclaSolta = function(e){
 				switch (e.keyCode){
@@ -63,8 +62,6 @@
 
 	var tela = document.getElementsByTagName("canvas")[0];
 	var ctx = tela.getContext("2d");
-
-		
 
 	var fps = 60;
 	var g = 40;
@@ -178,7 +175,6 @@
 			mirarAliado(tiro);
 			tirosInimigo.push(tiro);
 			ini.intervaloTiro = 1/intervaloTiro ;
-			
 			
 		}
 		ini.intervaloTiro -= 1*dt;
@@ -367,22 +363,19 @@
                     ini.x = 50+Math.random()*750;
                     
                 }
-
-
 		
                 if(vida==0){
                        if(confirm("Você perdeu. Pontuação: "+pontuacao)){
                             pontuacao = 0;
                             taxaVida=10;
-			    inimigo.velocidade = 100;
-				vida = 3;
-				reiniciarInimigo(inimigo);
-				reiniciarInimigo(inimigo2);
-				reiniciarInimigo(inimigo3);
-				reiniciarInimigo(inimigo4);
-				reiniciarInimigo(inimigo5);
-				
-                           
+						    inimigo.velocidade = 100;
+							vida = 3;
+							reiniciarInimigo(inimigo);
+							reiniciarInimigo(inimigo2);
+							reiniciarInimigo(inimigo3);
+							reiniciarInimigo(inimigo4);
+							reiniciarInimigo(inimigo5);
+							
                        }
                 }
                 ctx.fillStyle = "white";
