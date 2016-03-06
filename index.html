@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <title>Manipulação de Eixos</title>
+        <meta name="viewport" content="width=device-width, user-scalable=0,minimum-scale=1.0, maximum-scale=1.0"/>
         <script src="Sprite.js"></script>
         <script src="SoundLib.js"></script>
     </head>
@@ -13,11 +14,11 @@
         </canvas>
 
 <script>
+    
 
     var soundlib = new SoundLib();
-    soundlib.load("boom", "Grenade Explosion-SoundBible.com-2100581469.mp3");
+    soundlib.load("boom", "granade.mp3");
 
-    soundlib.play("boom");
         var teclado = {
             esquerda: false,
             direita: false,
@@ -110,10 +111,6 @@
         }
     };
 
-
-
-
-
     var pontuacao = 1;
     var taxaPontuacao = 12;
     var taxaVida = 10;
@@ -177,13 +174,6 @@
                 }
             }
 
-            if(chefaoFase==8) {
-                //VAI PRA DIREITA
-                chefao.angulo = 2*Math.PI;
-
-                //VAI PRA ESQUERDA
-                chefao.angulo = Math.PI;
-            }
        }
 
     }
@@ -296,9 +286,9 @@
             tirosChefao.push(tiro3);
 
              if(chefaoFase==2){
-                chefao.intervaloTiro = 1/(1+(pontuacao*dt)/10); // 5 tiros por 
+                chefao.intervaloTiro = 1/(1+(pontuacao*dt)/10); 
              }else{
-                chefao.intervaloTiro = 1/2; // 5 tiros por    
+                chefao.intervaloTiro = 1/2;  
              }
         }
 
@@ -346,6 +336,7 @@
                     }
 
                     if(t.colidiuCom(pc)){
+                        soundlib.play("boom",500);
                         taxaVida =taxaVida + taxaVida*dt;
                         boom.s = 0;
                         boom.x = pc.x;
@@ -379,7 +370,7 @@
             return;
         }
 
-        if((pontuacao>100 && pontuacao < 130)
+        if((pontuacao>800 && pontuacao < 830)
           || (pontuacao>1800 && pontuacao < 1830)
           || (pontuacao>2500 && pontuacao < 2530)
           || (pontuacao>4000 && pontuacao < 4020)) {
@@ -469,6 +460,7 @@
 
             todosInimigos.forEach(function(i){
                 if(t.colidiuCom(i)){
+                    soundlib.play("boom", 500);
                     boom.s = 0;
                     boom.x = i.x;
                     boom.y = i.y;
@@ -480,6 +472,7 @@
                 }
             });
             if(t.colidiuComChefe(chefao)){
+                    soundlib.play("boom", 500);
                     boom.s = 0;
                     boom.x = t.x;
                     boom.y = t.y;
@@ -533,6 +526,7 @@
 
         todosInimigos.forEach(function(ini){
             if(ini.colidiuCom(pc)){
+                soundlib.play("boom", 500);
                 pegouBonus = false;
                 inimigosMortos=0;
                 boom.s = 0;

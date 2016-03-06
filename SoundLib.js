@@ -12,7 +12,7 @@ SoundLib = function(){
 	this.load = function(nome, src){
 		this.sons[nome] = new Audio(src);
 		this.sons[nome].load();
-	}
+	};
 
 	this.play = function(nome, duracao){
 		if(this.ativo[nome]) return;
@@ -31,6 +31,6 @@ SoundLib = function(){
 			
 
 		}
-	}
+	};
 
 }
