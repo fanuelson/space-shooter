@@ -148,7 +148,7 @@
                 }
 
                 if(chefaoFase==1) {
-                    chefao.velocidade = 20;
+                    chefao.velocidade = 50;
                     chefao.tiro = true;
                     chefao.angulo = Math.PI;
                     if(chefao.x < 20) {
@@ -160,7 +160,7 @@
                 if (chefaoFase==2) {
                     chefao.tiro = true;
                     chefao.angulo = 2*Math.PI;
-                    chefao.velocidade = 200;
+                    chefao.velocidade = 200 + ( pontuacao*dt*10 );
                     
                     if(chefao.x >650) {
                         chefaoFase=3;
@@ -170,7 +170,7 @@
                if (chefaoFase==3) {
                     chefao.tiro = true;
                     chefao.angulo = Math.PI;
-                    chefao.velocidade = 200;
+                    chefao.velocidade = 200 + ( pontuacao*dt*10 );
                    
                     if(chefao.x < 40) {
                         chefaoFase=1;
@@ -272,7 +272,7 @@
                 tiro.w = 10;
                 tiro.h = 10;
                 tiro.velocidade = velocidadeTiro;
-                tiro.angulo = (Math.PI/2) + 0.3;
+                tiro.angulo = (Math.PI/2) + 0.6;
                 tiro.x = chefao.x ;
                 tiro.y = chefao.y + 40;
                 var tiro2 = new Sprite();
@@ -287,7 +287,7 @@
                 tiro3.w = 10;
                 tiro3.h = 10;
                 tiro3.velocidade = velocidadeTiro;
-                tiro3.angulo = (Math.PI/2) - 0.3;
+                tiro3.angulo = (Math.PI/2) - 0.6;
                 tiro3.x = chefao.x + 20;
                 tiro3.y = chefao.y + 40;
                 
@@ -296,7 +296,7 @@
                 tirosChefao.push(tiro3);
                 
                  if(chefaoFase==2){
-                    chefao.intervaloTiro = 1/1; // 5 tiros por 
+                    chefao.intervaloTiro = 1/(1+(pontuacao*dt)/10); // 5 tiros por 
                  }else{
                     chefao.intervaloTiro = 1/2; // 5 tiros por    
                  }
@@ -379,7 +379,7 @@
                 return;
             }
             
-            if((pontuacao>900 && pontuacao < 920)
+            if((pontuacao>100 && pontuacao < 130)
               || (pontuacao>1800 && pontuacao < 1830)
               || (pontuacao>2500 && pontuacao < 2530)
               || (pontuacao>4000 && pontuacao < 4020)) {
