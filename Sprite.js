@@ -29,19 +29,20 @@
 				this.velocidade = 0;
 				this.angulo = 4.7;
 				this.va = 0;
+            this.forma = 1;
 
 				this.mover = function(dt, g){
-					this.angulo = this.angulo + this.va*dt;
-					this.vx = Math.cos(this.angulo)*this.velocidade;
-					this.vy = Math.sin(this.angulo)*this.velocidade;
-					//this.ax -= 0.5*(this.vx);
+                this.angulo = this.angulo + this.va*dt;
+                this.vx = Math.cos(this.angulo)*this.velocidade;
+                this.vy = Math.sin(this.angulo)*this.velocidade;
+                //this.ax -= 0.5*(this.vx);
 
-					//this.vx = this.vx + this.ax*dt;
-					this.x = this.x + this.vx*dt;
-					
-					//this.ay -= 0.5*(this.vy);
-					//this.vy = this.vy + this.ay*dt+g*dt;
-					this.y = this.y + this.vy*dt;
+                //this.vx = this.vx + this.ax*dt;
+                this.x = this.x + this.vx*dt;
+
+                //this.ay -= 0.5*(this.vy);
+                //this.vy = this.vy + this.ay*dt+g*dt;
+                this.y = this.y + this.vy*dt;
 				};
 				this.moverAliado = function(dt, g){
 					this.ax -= 5*(this.vx);
@@ -68,8 +69,9 @@
 
 					ctx.translate(this.x, this.y);
 					ctx.rotate(this.angulo+Math.PI/2);
-					ctx.beginPath();
 					
+                    ctx.beginPath();
+                    
 					ctx.closePath();
 					ctx.fill();
 					ctx.stroke();
@@ -115,6 +117,30 @@
 					ctx.stroke();
 					ctx.restore();
 				};
+            
+            this.desenharChefao = function(ctx,nomeNave,xx,yy){
+					ctx.save();
+
+					ctx.strokeStyle = "black";
+					ctx.fillStyle = "rgb(250, 150, 150)";
+					width = this.w * 1;
+					height = this.h * 1;
+					posX = this.x - width/2;
+					posY = this.y - height/2;
+                    this.forma+=(9*dt);
+                    
+                    if(this.forma >= 4) this.forma = 1 ;
+                	imagens.desenhaCompleto(ctx,nomeNave,xx+(Math.floor(this.forma)*32),yy,30,32,posX,this.y,150,150);
+
+					ctx.translate(this.x, this.y);
+					ctx.rotate(this.angulo+Math.PI/2);
+					ctx.beginPath();
+					
+					ctx.closePath();
+					ctx.fill();
+					ctx.stroke();
+					ctx.restore();
+				};
 				
 				this.desenharAliado = function(ctx){
 					
@@ -128,6 +154,25 @@
 					
 				};
 				this.colidiuCom = function(alvo){
+					var porcentagemTamanho = 1;
+					thiswidth = this.w * porcentagemTamanho ;
+					thisheight = this.h * porcentagemTamanho ;
+					thisposX = this.x - (thiswidth/2);
+					thisposY = this.y - (thisheight/2);
+
+					alvowidth = alvo.w * porcentagemTamanho ;
+					alvoheight = alvo.h * porcentagemTamanho ;
+					alvoposX = alvo.x - alvowidth/2;
+					alvoposY = alvo.y - alvoheight/2;
+	
+					if(thisposX > alvoposX+alvowidth) return false;
+					if(thisposX+thiswidth < alvoposX) return false;
+					if(thisposY > alvoposY+alvoheight) return false;
+					if(thisposY+thisheight < alvoposY) return false;
+					return true;
+				};
+            
+                this.colidiuComChefe = function(alvo){
 					var porcentagemTamanho = 1;
 					thiswidth = this.w * porcentagemTamanho ;
 					thisheight = this.h * porcentagemTamanho ;
