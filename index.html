@@ -116,8 +116,8 @@
 
         var pontuacao = 1;
         var taxaPontuacao = 12;
-
         var taxaVida = 10;
+        
         
         var boom = new Sprite();
         boom.x = -100;
@@ -128,7 +128,7 @@
         var isChefao = false;
         
         var chefao = new Sprite();
-        chefao.vida = 2000;
+        chefao.vida = 4000;
         chefao.x = -1000;
         chefao.y = -200;
         chefao.w = 150;
@@ -141,8 +141,8 @@
         
         chefao.controlar = function() {
            if(isChefao) {
-                if(chefao.y > 70){
-                    chefao.y = 70;
+                if(chefao.y > 100){
+                    chefao.y = 100;
                     chefaoFase = 1;
                     chefao.intervaloTiro = 0.6;
                 }
@@ -187,6 +187,19 @@
            }
             
         }
+        
+        var pegouBonus = false;
+        var inimigosMortos = 0;
+        
+        var bonus = new Sprite();
+        bonus.x = 100;
+        bonus.y = -100;
+        bonus.w = 20;
+        bonus.h = 30;
+        bonus.tiro=false;
+        bonus.angulo = 7.87;
+        bonus.velocidade = 20;
+        bonus.desenharBonus(ctx,"bonus",6,33);
 
         var inimigo = new Sprite();
         inimigo.x = 100;
@@ -366,9 +379,10 @@
                 return;
             }
             
-            if((pontuacao>100 && pontuacao < 520)
-              || (pontuacao>1200 && pontuacao < 1230)
-              || (pontuacao>1900 && pontuacao < 1930)) {
+            if((pontuacao>900 && pontuacao < 920)
+              || (pontuacao>1800 && pontuacao < 1830)
+              || (pontuacao>2500 && pontuacao < 2530)
+              || (pontuacao>4000 && pontuacao < 4020)) {
                 chefao.y = -200;
                 chefao.x = 320;
                 chefao.w = 150;
@@ -391,6 +405,7 @@
             inimigo3.mover(dt,0);
             inimigo4.mover(dt,0);
             inimigo5.mover(dt,0);
+            bonus.mover(dt,0);
             
             chefao.mover(dt,0);
             ctx.fillStyle = "red";
@@ -420,7 +435,7 @@
                 tiro2.angulo = pc.angulo;
                 tiro2.x = pc.x + 10;
                 tiro2.y = pc.y ;
-                if(pontuacao>2000){
+                if(pegouBonus){
                     var tiro3 = new Sprite();
                     tiro3.w = 10;
                     tiro3.h = 10;
@@ -441,8 +456,13 @@
 
             pc.intervaloTiro -= 1*dt;
             tiros.forEach(function(t){
-                t.mover(dt,0);	
-                t.desenharTiro(ctx,"ship2");
+                t.mover(dt,0);
+                if(pegouBonus){
+                    t.desenharTiroBonus(ctx,"ship2");
+                }else{
+                    t.desenharTiro(ctx,"ship2");    
+                }
+                
                 if(t.y<0 || t.y > tela.height || t.x<0 || t.x> tela.width){
                     tiros.splice(tiros.indexOf(t), 1);
                 }
@@ -452,7 +472,7 @@
                         boom.s = 0;
                         boom.x = i.x;
                         boom.y = i.y;
-
+                        inimigosMortos++;
                         reiniciarInimigo(i);
                         pontuacao+=taxaPontuacao;
                       // inimigo.velocidade = inimigo.velocidade + (pontuacao/1000);
@@ -488,10 +508,33 @@
                     taxaVida =taxaVida + taxaVida*dt*10;
                 }
             });
-                   
+            
+            if(inimigosMortos==20) {
+                if(pegouBonus){
+                    pegouBonus = false;
+                    inimigosMortos = 0;
+                }else{
+                    bonus.y = -100;
+                    bonus.x = 100;
+                }  
+            }
+            
+            
+               
+            if(bonus.colidiuCom(pc)){
+                bonus.x = -2000;
+                pegouBonus = true;
+                inimigosMortos = 0;
+            }
+            
+            if(pc.colidiuCom(chefao)){
+                vida=0;
+            }
 
             todosInimigos.forEach(function(ini){
                 if(ini.colidiuCom(pc)){
+                    pegouBonus = false;
+                    inimigosMortos=0;
                     boom.s = 0;
                     boom.x = pc.x;
                     boom.y = pc.y;
@@ -510,7 +553,7 @@
                 chefao.x = -1000;
                 isChefao=false;
                 chefao.angulo = Math.PI/2;
-                chefao.vida = 2000;
+                chefao.vida = 5000;
                 pontuacao += 300;
             }
             
@@ -529,7 +572,7 @@
                 inimigo5.desenharNave(ctx,"ship2",0,128);
 
             
-            
+            bonus.desenharBonus(ctx,"bonus",6,33);
             chefao.desenharChefao(ctx,"ship2",0,96);
             pc.desenharAliado(ctx);
             boom.desenhar(ctx);
@@ -542,7 +585,14 @@
                 }
 
                 if(vida==0){
-                    
+                    pc.x = 500;
+                    pc.y = 470;
+                    chefaoFase = 0;
+                    isChefao = false;
+                    chefao.vida = 4000;
+                    chefao.x = -1000;
+                    chefao.y = -200;
+                    pegouBonus=false;
                    todosInimigos.forEach(function(ini){
                        reiniciarInimigo(ini);
                    });

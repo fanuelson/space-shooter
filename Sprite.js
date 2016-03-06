@@ -14,7 +14,8 @@
                 };
                 var imagens = new BancoDeImagens();
                 imagens.add("ship","nave.png");
-                imagens.add("ship2","spritesheet.png");	
+                imagens.add("ship2","spritesheet.png");
+                imagens.add("bonus","bonus.png");
 			
 
 		function Sprite(){
@@ -97,6 +98,26 @@
 					ctx.stroke();
 					ctx.restore();
 				};
+            this.desenharTiroBonus = function(ctx,nomeNave){
+					ctx.save();
+
+					ctx.strokeStyle = "black";
+					ctx.fillStyle = "rgb(250, 150, 150)";
+					width = this.w * 1;
+					height = this.h * 1;
+					posX = this.x - width/2;
+					posY = this.y - height/2;
+
+					imagens.desenhaCompleto(ctx,nomeNave,23,79,10,10,posX,this.y,10,10);
+					ctx.translate(this.x, this.y);
+					ctx.rotate(this.angulo+Math.PI/2);
+					ctx.beginPath();
+					
+					ctx.closePath();
+					ctx.fill();
+					ctx.stroke();
+					ctx.restore();
+				};
 				this.desenharTiroInimigo = function(ctx,nomeNave){
 					ctx.save();
 
@@ -149,10 +170,36 @@
 					height = this.h * 1;
 					posX = this.x - width/2;
 					posY = this.y - height/2;
+                
                     this.forma+=(9*dt);
                     
                     if(this.forma >= 4) this.forma = 1 ;
-                	imagens.desenhaCompleto(ctx,nomeNave,xx+(Math.floor(this.forma)*32),yy,30,32,posX,this.y,150,150);
+                	imagens.desenhaCompleto(ctx,nomeNave,xx+(Math.floor(this.forma)*32),yy,30,32,posX,posY,150,150);
+
+					ctx.translate(this.x, this.y);
+					ctx.rotate(this.angulo+Math.PI/2);
+					ctx.beginPath();
+					
+					ctx.closePath();
+					ctx.fill();
+					ctx.stroke();
+					ctx.restore();
+				};
+            
+            this.desenharBonus = function(ctx,nomeNave,xx,yy){
+					ctx.save();
+
+					ctx.strokeStyle = "black";
+					ctx.fillStyle = "rgb(250, 150, 150)";
+					width = this.w * 1;
+					height = this.h * 1;
+					posX = this.x - width/2;
+					posY = this.y - height/2;
+                    this.forma+=(9*dt);
+                    
+                    if(this.forma >= 8) this.forma = 1 ;
+                
+                	imagens.desenhaCompleto(ctx,nomeNave,xx+(Math.floor(this.forma)*32),yy,20,30,posX,this.y,20,30);
 
 					ctx.translate(this.x, this.y);
 					ctx.rotate(this.angulo+Math.PI/2);
@@ -198,8 +245,8 @@
 					var porcentagemTamanho = 1;
 					thiswidth = this.w * porcentagemTamanho ;
 					thisheight = this.h * porcentagemTamanho ;
-					thisposX = this.x - (thiswidth/2);
-					thisposY = this.y - (thisheight/2);
+					thisposX = this.x + (thiswidth/2);
+					thisposY = this.y + (thisheight/2);
 
 					alvowidth = alvo.w * porcentagemTamanho ;
 					alvoheight = alvo.h * porcentagemTamanho ;
