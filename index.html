@@ -44,7 +44,7 @@
                         break;
                         case 13:
                             perdeu = false;	
-                            pontuacao = 0;
+                            pontuacao = 1;
                             taxaVida=10;
                             inimigo.velocidade = 100;
                             vida = 3;
@@ -114,8 +114,8 @@
         
         
 
-            var pontuacao = 1;
-            var taxaPontuacao = 12;
+        var pontuacao = 1;
+        var taxaPontuacao = 12;
 
         var taxaVida = 10;
         
@@ -125,10 +125,11 @@
         boom.img.src = "explosion17.png"
         var todosInimigos = [];
         var chefaoFase = 0;
+        var isChefao = false;
         
         var chefao = new Sprite();
-        chefao.vida = 800;
-        chefao.x = 320;
+        chefao.vida = 2000;
+        chefao.x = -1000;
         chefao.y = -200;
         chefao.w = 150;
         chefao.h = 150;
@@ -139,35 +140,51 @@
         chefao.desenharNave(ctx,"ship2",32,160);
         
         chefao.controlar = function() {
-            if(chefao.y > 70){
-                chefao.y = 70;
-                chefaoFase = 1;
-            }
-            
-            if(chefaoFase==1) {
-                chefao.tiro = true;
-                chefao.angulo = Math.PI;
-                if(chefao.x < 20) {
-                    chefao.x = 20;
-                    chefaoFase=2;
+           if(isChefao) {
+                if(chefao.y > 70){
+                    chefao.y = 70;
+                    chefaoFase = 1;
+                    chefao.intervaloTiro = 0.6;
                 }
-            }
-            
-            if (chefaoFase==2) {
-                chefao.tiro = true;
-                chefao.angulo = 2*Math.PI;
-                if(chefao.x >650) {
-                    chefaoFase=1;
-                }
-            }
-            
-            if(chefaoFase==3) {
-                //VAI PRA DIREITA
-                chefao.angulo = 2*Math.PI;
 
-                //VAI PRA ESQUERDA
-                chefao.angulo = Math.PI;
-            }
+                if(chefaoFase==1) {
+                    chefao.velocidade = 20;
+                    chefao.tiro = true;
+                    chefao.angulo = Math.PI;
+                    if(chefao.x < 20) {
+                        chefao.x = 20;
+                        chefaoFase=2;
+                    }
+                }
+
+                if (chefaoFase==2) {
+                    chefao.tiro = true;
+                    chefao.angulo = 2*Math.PI;
+                    chefao.velocidade = 200;
+                    
+                    if(chefao.x >650) {
+                        chefaoFase=3;
+                    }
+                }
+               
+               if (chefaoFase==3) {
+                    chefao.tiro = true;
+                    chefao.angulo = Math.PI;
+                    chefao.velocidade = 200;
+                   
+                    if(chefao.x < 40) {
+                        chefaoFase=1;
+                    }
+                }
+
+                if(chefaoFase==8) {
+                    //VAI PRA DIREITA
+                    chefao.angulo = 2*Math.PI;
+
+                    //VAI PRA ESQUERDA
+                    chefao.angulo = Math.PI;
+                }
+           }
             
         }
 
@@ -179,7 +196,7 @@
             inimigo.velocidade = 50;
         inimigo.intervaloTiro=0;
         inimigo.desenharNave(ctx,"ship2",32,160);
-        //todosInimigos.push(inimigo);
+        todosInimigos.push(inimigo);
         var inimigo2 = new Sprite();
             inimigo2.x = 100;
         inimigo2.y = 5;
@@ -188,7 +205,7 @@
             inimigo2.tiro=true;
             inimigo2.intervaloTiro=0;
         inimigo2.desenharNave(ctx,"ship2",0,0);
-       // todosInimigos.push(inimigo2);
+       todosInimigos.push(inimigo2);
         var inimigo3 = new Sprite();
             inimigo3.x = 140;
         inimigo3.y = 5;
@@ -197,7 +214,7 @@
         inimigo3.desenharNave(ctx,"ship2",0,0);
         inimigo3.tiro=true;
             inimigo3.intervaloTiro=0;
-        //todosInimigos.push(inimigo3);
+        todosInimigos.push(inimigo3);
         var inimigo4 = new Sprite();
             inimigo4.x = 200;
         inimigo4.y = 5;
@@ -206,14 +223,14 @@
         inimigo4.desenharNave(ctx,"ship2",0,0);
         inimigo4.tiro=true;
         inimigo4.intervaloTiro=0;
-       // todosInimigos.push(inimigo4);
+        todosInimigos.push(inimigo4);
         var inimigo5 = new Sprite();
             inimigo5.x = 120;
         inimigo5.y = 5;
             inimigo5.angulo = 7.87;
             inimigo5.velocidade = 50;
         inimigo5.desenharNave(ctx,"ship2",0,128);
-        //todosInimigos.push(inimigo5);
+        todosInimigos.push(inimigo5);
         var tiros = [];
         var tirosInimigo = [];
         var tirosChefao = [] ;
@@ -243,14 +260,14 @@
                 tiro.h = 10;
                 tiro.velocidade = velocidadeTiro;
                 tiro.angulo = (Math.PI/2) + 0.3;
-                tiro.x = chefao.x - 20 + 70;
+                tiro.x = chefao.x ;
                 tiro.y = chefao.y + 40;
                 var tiro2 = new Sprite();
                 tiro2.w = 10;
                 tiro2.h = 10;
                 tiro2.velocidade = velocidadeTiro;
                 tiro2.angulo = (Math.PI/2);
-                tiro2.x = chefao.x + 70;
+                tiro2.x = chefao.x + 10;
                 tiro2.y = chefao.y + 40;
                 
                 var tiro3 = new Sprite();
@@ -258,21 +275,25 @@
                 tiro3.h = 10;
                 tiro3.velocidade = velocidadeTiro;
                 tiro3.angulo = (Math.PI/2) - 0.3;
-                tiro3.x = chefao.x + 20 + 70;
+                tiro3.x = chefao.x + 20;
                 tiro3.y = chefao.y + 40;
                 
                 tirosChefao.push(tiro);
                 tirosChefao.push(tiro2);
                 tirosChefao.push(tiro3);
                 
-                 chefao.intervaloTiro = 1/intervaloTiro; // 5 tiros por segundo
+                 if(chefaoFase==2){
+                    chefao.intervaloTiro = 1/1; // 5 tiros por 
+                 }else{
+                    chefao.intervaloTiro = 1/2; // 5 tiros por    
+                 }
             }
 
 
             chefao.intervaloTiro -= 1*dt;
             tirosChefao.forEach(function(t){
                 t.mover(dt,0);	
-                t.desenharTiro(ctx,"ship2");
+                t.desenharTiroChefao(ctx,"ship2");
                 if(t.y<0 || t.y > tela.height || t.x < 0 || t.x > tela.width){
                     tirosChefao.splice(tirosChefao.indexOf(t), 1);
                 }
@@ -297,26 +318,30 @@
                 tiro.x = ini.x;
                 tiro.y = ini.y ;
                 mirarAliado(tiro);
-                tirosInimigo.push(tiro);
+                if(!isChefao)
+                    tirosInimigo.push(tiro);
                 ini.intervaloTiro = 1/intervaloTiro ;
 
             }
             ini.intervaloTiro -= 1*dt;
-            tirosInimigo.forEach(function(t){
-                t.mover(dt,0);	
-                t.desenharTiroInimigo(ctx,"ship2");
-                if(t.y<0 || t.y > tela.height || t.x<0 || t.x> tela.width){
-                    tirosInimigo.splice(tirosInimigo.indexOf(t), 1);
-                }
+               if(!isChefao) {
+                    tirosInimigo.forEach(function(t){
+                        t.mover(dt,0);	
+                        t.desenharTiroInimigo(ctx,"ship2");
+                        if(t.y<0 || t.y > tela.height || t.x<0 || t.x> tela.width){
+                            tirosInimigo.splice(tirosInimigo.indexOf(t), 1);
+                        }
 
-                if(t.colidiuCom(pc)){
-                    taxaVida =taxaVida + taxaVida*dt;
-                    boom.s = 0;
-                    boom.x = pc.x;
-                    boom.y = pc.y;
+                        if(t.colidiuCom(pc)){
+                            taxaVida =taxaVida + taxaVida*dt;
+                            boom.s = 0;
+                            boom.x = pc.x;
+                            boom.y = pc.y;
 
-                }
-            });
+                        }
+                    });   
+               }
+            
         }
 
 
@@ -340,15 +365,33 @@
                 ctx.fillText("Aperte enter para jogar novamente...",250,300);
                 return;
             }
+            
+            if((pontuacao>100 && pontuacao < 520)
+              || (pontuacao>1200 && pontuacao < 1230)
+              || (pontuacao>1900 && pontuacao < 1930)) {
+                chefao.y = -200;
+                chefao.x = 320;
+                chefao.w = 150;
+                chefao.h = 150;
+                chefao.angulo = Math.PI/2;
+                chefao.velocidade = 20;
+                chefao.tiro=false;
+                chefao.intervaloTiro=0;
+                isChefao=true;
+                pontuacao++;
+                chefaoFase = 0;
+            }
 
             chefao.controlar();
             pc.controlar();	
             pc.moverAliado(dt,g);
+            
             inimigo.mover(dt,0);
             inimigo2.mover(dt,0);
             inimigo3.mover(dt,0);
             inimigo4.mover(dt,0);
             inimigo5.mover(dt,0);
+            
             chefao.mover(dt,0);
             ctx.fillStyle = "red";
             ctx.fillRect(150,10,650-taxaVida,30);
@@ -359,7 +402,7 @@
             atirar(inimigo3,70,0.6);
             atirar(inimigo4,70,0.6);
             atirar(inimigo5,40,2);
-            atirarChefao(80,1);
+            atirarChefao(80,3);
 
             if(pc.tiro && pc.intervaloTiro<=0){
                 soundlib.play("boom",500);
@@ -459,15 +502,34 @@
             });
             
             if(taxaVida>650){
-                //vida = vida - 1;
+                vida = vida - 1;
                 taxaVida = 10;		
             }
+            
+            if(chefao.vida < 0) {
+                chefao.x = -1000;
+                isChefao=false;
+                chefao.angulo = Math.PI/2;
+                chefao.vida = 2000;
+                pontuacao += 300;
+            }
+            
+            if(isChefao) {
+                todosInimigos.forEach(function(ini){
+                    ini.x = -1000;
+                    ini.y=300;
+                    
+                });
+            }
+            
+                inimigo.desenharNave(ctx,"ship2",32,160);
+                inimigo2.desenharNave(ctx,"ship2",65,128);
+                inimigo3.desenharNave(ctx,"ship2",0,190);
+                inimigo4.desenharNave(ctx,"ship2",0,160);
+                inimigo5.desenharNave(ctx,"ship2",0,128);
 
-            inimigo.desenharNave(ctx,"ship2",32,160);
-            inimigo2.desenharNave(ctx,"ship2",65,128);
-            inimigo3.desenharNave(ctx,"ship2",0,190);
-            inimigo4.desenharNave(ctx,"ship2",0,160);
-            inimigo5.desenharNave(ctx,"ship2",0,128);
+            
+            
             chefao.desenharChefao(ctx,"ship2",0,96);
             pc.desenharAliado(ctx);
             boom.desenhar(ctx);
@@ -475,13 +537,11 @@
                 function reiniciarInimigo(ini){
                     ini.y = -40;
                     ini.x = 50;
-
                     ini.x = 50+Math.random()*750;
 
                 }
 
                 if(vida==0){
-                       
                     
                    todosInimigos.forEach(function(ini){
                        reiniciarInimigo(ini);

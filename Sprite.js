@@ -118,6 +118,28 @@
 					ctx.restore();
 				};
             
+            this.desenharTiroChefao = function(ctx,nomeNave){
+					ctx.save();
+
+					ctx.strokeStyle = "black";
+					ctx.fillStyle = "rgb(250, 150, 150)";
+					width = this.w * 1;
+					height = this.h * 1;
+					posX = this.x - width/2;
+					posY = this.y - height/2;
+
+					imagens.desenhaCompleto(ctx,nomeNave,56,80,8,8,posX,this.y,15,15);
+					ctx.translate(this.x, this.y);
+					ctx.rotate(this.angulo+Math.PI/2);
+					ctx.beginPath();
+					
+					ctx.closePath();
+					ctx.fill();
+					ctx.stroke();
+					ctx.restore();
+				};
+            
+            
             this.desenharChefao = function(ctx,nomeNave,xx,yy){
 					ctx.save();
 
